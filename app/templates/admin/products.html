@@ -1,0 +1,67 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="title">قائمة المنتجات</h2>
+    
+ <!-- From Uiverse.io by AlimurtuzaCodes --> 
+    <a href="{{ url_for('admin.add_product') }}" class="btnny">
+        <svg height="24" width="24" fill="#FFFFFF" viewBox="0 0 24 24" data-name="Layer 1" id="Layer_1" class="sparkle">
+            <path d="M10,21.236,6.755,14.745.264,11.5,6.755,8.255,10,1.764l3.245,6.491L19.736,11.5l-6.491,3.245ZM18,21l1.5,3L21,21l3-1.5L21,18l-1.5-3L18,18l-3,1.5ZM19.333,4.667,20.5,7l1.167-2.333L24,3.5,21.667,2.333,20.5,0,19.333,2.333,17,3.5Z"></path>
+        </svg>
+
+        <span class="text">إضافة منتج جديد</span>
+    </a> 
+</div>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <a href="{{ url_for('admin.view_product', id=product.id) }}">
+                <img src="{{ product.get_image_url() }}" 
+                class="card-img-top product-image" 
+                alt="{{ product.name }}"
+                style="height: 200px; object-fit: cover;">
+            </a>
+            
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncate(100) }}</p>
+             <div class="d-flex justify-content-between align-items-center">
+                {% if product.price_history %}
+                <p>
+                <span style="color: red; text-decoration: line-through;">السعر السابق:
+                    {{ product.price_history[-1].old_price }} ريال
+                </span>
+                <span style="color: green; font-weight: bold;">السعر الحالى:
+                    {{ product.price }} ريال
+                </span>
+                        </p>
+                    {% else %}
+                        <span style="color: green; font-weight: bold;">السعر:{{ product.price }} ريال</span>
+                    {% endif %}
+                    <span class="badge bg-{% if product.stock=='متوفر' %}success{% else %}danger{% endif %}">
+                        {{ product.stock }}
+                    </span>
+                </div>
+            </div>
+            {% if current_user.has_permission(Permissions.MANAGE_PRODUCTS) %}
+            <div class="card-footer bg-white">
+                <a href="{{ url_for('admin.edit_product', id=product.id) }}" 
+                   class="btn btn-sm btn-outline-primary">تعديل</a>
+                <form method="POST" action="{{ url_for('admin.delete_product', id=product.id) }}" 
+                      class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('هل أنت متأكد؟')">حذف</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.toggle_visibility', product_id=product.id) }}">
+                    <button type="submit">{{ 'إخفاء' if product.visible else 'إظهار' }}</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

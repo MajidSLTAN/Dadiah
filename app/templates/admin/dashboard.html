@@ -1,0 +1,110 @@
+{% extends "main.html" %}
+
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% if current_user.has_permission(Permissions.MANAGE_PRODUCTS) %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">المنتجات</h5>
+                        <h2 class="mb-0">{{ products_count }}</h2>
+                    </div>
+                    <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
+                </div>
+                <a href="{{ url_for('admin.products') }}" class="text-white stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">الطلبات</h5>
+                        <h2 class="mb-0">{{ orders_count }}</h2>
+                    </div>
+                    <i class="bi bi-cart-check" style="font-size: 2rem;"></i>
+                </div>
+                <a href="{{ url_for('admin.orders') }}" class="text-white stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    
+  {% if current_user.has_permission(Permissions.MANAGE_USERS) %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">المستخدمين</h5>
+                        <h2 class="mb-0">{{ users_count }}</h2>
+                    </div>
+                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                </div>
+                <a href="{{ url_for('admin.list_users') }}" class="text-white stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">العملاء</h5>
+                        <h2 class="mb-0">{{ users_count }}</h2>
+                    </div>
+                    <i class="bi bi-people" style="font-size: 2rem;"></i>
+                </div>
+                <a href="#" class="text-white stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>أحدث الطلبات</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>العميل</th>
+                        <th>المجموع</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.user.full_name if order.user else 'زائر' }}</td>
+                        <td>{{ order.total }} ر.س</td>
+                        <td>
+                            <span class="badge 
+                                {% if order.status == 'completed' %}bg-success
+                                {% elif order.status == 'cancelled' %}bg-danger
+                                {% else %}bg-warning{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

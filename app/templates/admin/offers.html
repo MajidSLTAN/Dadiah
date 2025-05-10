@@ -1,0 +1,86 @@
+{% extends "main.html" %}
+
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="offer-form">
+    <div class="form-title">إنشاء عرض جديد</div>
+    <form id="offerForm">
+        <div class="mb-3">
+            <label class="form-label">عنوان العرض</label>
+            <input type="text" class="form-control" name="title" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">وصف العرض</label>
+            <textarea class="form-control" name="description" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">معرف المنتج (Product ID)</label>
+            <input type="number" class="form-control" name="product_id" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">نسبة الخصم (%)</label>
+            <input type="number" class="form-control" name="discount_percentage" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الحد الأدنى للكمية</label>
+            <input type="number" class="form-control" name="min_quantity" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">شرط الدفع</label>
+            <input type="text" class="form-control" name="payment_condition" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">تاريخ انتهاء العرض</label>
+            <input type="date" class="form-control" name="end_date" required>
+        </div>
+
+        <div id="responseMessage" class="alert d-none" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary w-100">إرسال العرض</button>
+    </form>
+</div>
+
+<!--script>
+document.getElementById('offerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch('/create_offer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        const messageBox = document.getElementById('responseMessage');
+        
+        if (response.ok) {
+            messageBox.className = "alert alert-success";
+            messageBox.innerText = result.message;
+            form.reset();
+        } else {
+            messageBox.className = "alert alert-danger";
+            messageBox.innerText = result.error || "حدث خطأ ما";
+        }
+        messageBox.classList.remove('d-none');
+    } catch (error) {
+        const messageBox = document.getElementById('responseMessage');
+        messageBox.className = "alert alert-danger";
+        messageBox.innerText = "فشل الاتصال بالخادم";
+        messageBox.classList.remove('d-none');
+    }
+});</script-->
+
+{% endblock %}

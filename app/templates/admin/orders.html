@@ -1,0 +1,86 @@
+{% extends "main.html" %}
+
+{% block title %}إدارة الطلبات{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">إدارة الطلبات</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>العميل</th>
+                <th>المجموع</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                {% if current_user.has_permission(Permissions.VIEW_ALL_ORDERS)%}
+                <td>#{{ order.id }}</td>
+                <td>{{ order.user.full_name if order.user else 'زائر' }}</td>
+                <td>{{ order.total }} ر.ي</td>
+                <td>
+                    <span class="badge 
+                        {% if order.status == 'completed' %}bg-success
+                        {% elif order.status == 'cancelled' %}bg-danger
+                        {% else %}bg-warning{% endif %}">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.view_order', id=order.id) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> التفاصيل
+                    </a>
+                </td>
+                {%elif current_user.has_permission(Permissions.VIEW_BRANCH_ORDERS)%}
+                <td>#{{ order.id if order.branch_id==current_user.branch_id}}</td>
+                <td>{{ order.user.full_name if order.user else 'زائر' }}</td>
+                <td>{{ order.total }} ر.ي</td>
+                <td>
+                    <span class="badge 
+                        {% if order.status == 'completed' %}bg-success
+                        {% elif order.status == 'cancelled' %}bg-danger
+                        {% else %}bg-warning{% endif %}">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.view_order', id=order.id) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> التفاصيل
+                    </a>
+                </td>
+                {%else%}
+                <td>#{{ order.id if order.branch_id==current_user.branch_id}}</td>
+                <td>{{ order.user.full_name if order.user else 'زائر' }}</td>
+                <td>{{ order.total }} ر.ي</td>
+                <td>
+                    <span class="badge 
+                        {% if order.status == 'completed' %}bg-success
+                        {% elif order.status == 'cancelled' %}bg-danger
+                        {% else %}bg-warning{% endif %}">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('admin.view_order', id=order.id) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> التفاصيل
+                    </a>
+                </td>
+                {%endif%}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

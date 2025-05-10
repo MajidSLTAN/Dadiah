@@ -1,0 +1,55 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4>تعديل المنتج</h4>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name" class="form-label">اسم المنتج</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">الوصف</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ product.description }}</textarea>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="price" class="form-label">السعر (ر.س)</label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" 
+                           value="{{ product.price }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="stock" class="form-label">الحالة</label>
+                    <input type="radio" name="stock" value="متوفر" {% if product.stock == 'متوفر' %}checked{% endif %}> متوفر<br>
+                    <input type="radio" name="stock" value="غير متوفر" {% if product.stock == 'غير متوفر' %}checked{% endif %}> غير متوفر<br>            
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>إظهار المنتج:</label>
+                <input type="checkbox" name="visible" {% if product.visible %}checked{% endif %}><br><br>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">الصورة الحالية</label>
+                {% if product.image_url %}
+                <div>
+                    <img src="{{ url_for('static', filename=product.image_url) }}" width="100" class="img-thumbnail mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remove_image" name="remove_image">
+                        <label class="form-check-label" for="remove_image">حذف الصورة الحالية</label>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted">لا يوجد صورة</p>
+                {% endif %}
+                <label for="image" class="form-label">تغيير الصورة</label>
+                <input class="form-control" type="file" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+            <a href="{{ url_for('admin.products') }}" class="btn btn-secondary">إلغاء</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
